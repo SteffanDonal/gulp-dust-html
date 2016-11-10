@@ -27,7 +27,7 @@ module.exports = function (options) {
       try {
         callback(null, html);
       } catch(err) {
-				callback(err);
+        callback(err);
       }
     });
   };
