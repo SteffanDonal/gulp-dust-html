@@ -12,6 +12,8 @@ module.exports = function (options) {
   var data = options.data || {};
   var defaultExt = options.defaultExt || '.dust';
   var whitespace = options.whitespace || false;
+	
+	dust.config = options.config || {};
   
   dust.onLoad = function(filePath, callback) {
     if(!path.extname(filePath).length)
