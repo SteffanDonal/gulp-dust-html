@@ -65,6 +65,13 @@ Default: `.dust`
 
 Default extension used for templates
 
+##### config
+
+Type: `object`
+Default: `{}`
+
+Use it to override any of the dust.config values, e.g. [`cache`](http://www.dustjs.com/guides/rendering/) or [`amd`](http://www.dustjs.com/guides/rendering/).
+
 ## Todo
 
  - Update tests to reflect the new codebase
