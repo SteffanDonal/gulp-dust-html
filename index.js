@@ -5,16 +5,16 @@ var fs = require('fs');
 var through = require('through2');
 var dust = require('dustjs-linkedin');
 
-module.exports = function (options) {
+module.exports = async function (options) {
   if (!options)
     options = {}
   var basePath = options.basePath || '.';
   var data = options.data || {};
   var defaultExt = options.defaultExt || '.dust';
   var whitespace = options.whitespace || false;
-	
+
 	dust.config = options.config || {};
-  
+
   dust.onLoad = function(filePath, callback) {
     if(!path.extname(filePath).length)
       filePath += defaultExt;
@@ -37,7 +37,7 @@ module.exports = function (options) {
   if (whitespace)
     dust.optimizers.format = function (ctx, node) { return node; };
 
-  return through.obj(function (file, enc, cb) {
+  return through.obj(async function (file, enc, cb) {
     if (file.isNull()) {
       this.push(file);
       return cb();
@@ -49,17 +49,17 @@ module.exports = function (options) {
     }
 
     try {
-      var contextData = typeof data === 'function' ? data(file) : data;
+      var contextData = typeof data === 'function' ? await data(file) : data;
       var finalName = typeof name === 'function' && name(file) || file.relative;
       var tmpl = dust.compileFn(file.contents.toString(), finalName);
       var that = this;
       tmpl(contextData, function(err, out){
         if (err){
           that.emit('error', new gutil.PluginError('gulp-dust', err));
-          return; 
+          return;
         }
         file.contents = new Buffer(out);
-        file.path = gutil.replaceExtension(file.path, '.html');     
+        file.path = gutil.replaceExtension(file.path, '.html');
         that.push(file);
         cb();
       })
